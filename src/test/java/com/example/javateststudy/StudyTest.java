@@ -11,6 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class StudyTest {
 
     @Test
+    @DisplayName("assertj")
+    void assertj() {
+        Study actual = new Study(10);
+        org.assertj.core.api.Assertions.assertThat(actual.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
     @DisplayName("스터디 만들기")
     void create_new_study() {
         Study study = new Study(-10);
