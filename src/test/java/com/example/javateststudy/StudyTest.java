@@ -14,20 +14,18 @@ import static org.junit.jupiter.api.Assumptions.assumingThat;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)   // "_" -> " " 변경
 class StudyTest {
 
-    @Test
+    @FastTest
     @DisplayName("assertj")
-    @Tag("fast")
     void assertj() {
         Study actual = new Study(10);
         assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
-    @Test
+    @SlowTest
     @DisplayName("스터디 만들기3")
     @EnabledOnOs({OS.MAC,OS.LINUX})
     @EnabledOnJre({JRE.JAVA_8,JRE.JAVA_11})
     @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
-    @Tag("slow")
     void create_new_study3() {
         String test_env = System.getenv("TEST_ENV");
         System.out.println("local");
