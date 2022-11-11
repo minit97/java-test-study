@@ -24,8 +24,11 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)   // "_" -> " " 변경
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class StudyTest {
 
+    @Order(2)
     @DisplayName("스터디 만들기")
     @RepeatedTest(value = 10, name = "{displayName}, {currentRepetition}/{totalRepetitions}")
     void repeatTest(RepetitionInfo repetitionInfo) {
@@ -33,8 +36,7 @@ class StudyTest {
                 repetitionInfo.getTotalRepetitions());
     }
 
-
-
+    @Order(1)
     @DisplayName("스터디 만들기")
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @ValueSource(ints = {10,20,40})
