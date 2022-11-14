@@ -2,10 +2,12 @@ package com.example.javateststudy.study;
 
 import com.example.javateststudy.domain.Member;
 import com.example.javateststudy.domain.Study;
+import com.example.javateststudy.domain.StudyStatus;
 import com.example.javateststudy.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -17,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest {
+
+    @Mock MemberService memberService;
+    @Mock StudyRepository studyRepository;
 
     @Test
     void createNewService(@Mock MemberService memberService, @Mock StudyRepository studyRepository) {
@@ -50,7 +55,7 @@ class StudyServiceTest {
     }
 
     @Test
-    @DisplayName("Mock객체 Stubbing 연습문제")
+    @DisplayName("Mock객체 Stubbing 연습문제 + Mock 객체확인")
     void mockStubbingPractice(@Mock MemberService memberService, @Mock StudyRepository studyRepository) {
         StudyService studyService = new StudyService(memberService, studyRepository);
         Study study = new Study(10,"테스트");
@@ -75,4 +80,56 @@ class StudyServiceTest {
 
         inOrder.verify(memberService).notify(member);
     }
+
+    @Test
+    @DisplayName("BDD 스타일 Mockito API")
+    void BddMockitoAPI() {
+        // Given
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        assertNotNull(studyService);
+
+        Member member = new Member();
+        member.setId(1L);
+        member.setEmail("phm@email.com");
+
+        Study study = new Study(10, "테스트");
+
+//        Mockito.when(memberService.findById(1L)).thenReturn(Optional.of(member));
+//        Mockito.when(studyRepository.save(study)).thenReturn(study);
+        BDDMockito.given(memberService.findById(1L)).willReturn(Optional.of(member));
+        BDDMockito.given(studyRepository.save(study)).willReturn(study);
+
+        // When
+        studyService.createNewStudy(1L, study);
+
+        // Then
+        assertEquals(member, study.getOwnerId());
+//        Mockito.verify(memberService, Mockito.times(1)).notify(study);
+        BDDMockito.then(memberService).should(Mockito.times(1)).notify(study);
+//        Mockito.verifyNoInteractions(memberService);
+        BDDMockito.then(memberService).shouldHaveNoMoreInteractions();
+    }
+
+    @DisplayName("Mockito 연습문제")
+    @Test
+    void openStudy() {
+        // Given
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        Study study = new Study(10, "더 자바, 테스트");
+
+        // TODO studyRepository Mock 객체의 save 메소드를 호출 시 study를 리턴하도록 만들기.
+        Mockito.when(studyRepository.save(study)).thenReturn(study);
+
+        // When
+        studyService.openStudy(study);
+
+        // Then
+        // TODO study의 status가 OPENED로 변경됐는지 확인
+        assertEquals(StudyStatus.OPENED,study.getStatus());
+        // TODO study의 openedDataTime이 null이 아닌지 확인
+        assertNotNull(study.getOpenedDateTime());
+        // TODO memberService의 notify(study)가 호출 됐는지 확인
+        Mockito.verify(memberService, Mockito.any()).notify(study);
+    }
+
 }
