@@ -6,11 +6,11 @@ import com.example.javateststudy.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,5 +62,17 @@ class StudyServiceTest {
         Mockito.when(studyRepository.save(study)).thenReturn(study);
         studyService.createNewStudy(1L, study);
         assertEquals(member, study.getOwnerId());
+
+        Mockito.verify(memberService, Mockito.times(1)).notify(study);  // memberService.notify(study)의 호출횟수 확인
+        Mockito.verify(memberService, Mockito.never()).validate(Mockito.any());  // memberService.validate() 은 호출 X
+
+        // 순서 확인
+        InOrder inOrder = Mockito.inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+
+        // 액션이 없어야 한다는 것을 테스트
+        Mockito.verifyNoInteractions(memberService);
+
+        inOrder.verify(memberService).notify(member);
     }
 }
