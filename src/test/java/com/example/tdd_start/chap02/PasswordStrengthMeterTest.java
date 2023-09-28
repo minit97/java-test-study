@@ -1,4 +1,4 @@
-package com.example.tdd_start.chap2;
+package com.example.tdd_start.chap02;
 
 import org.junit.jupiter.api.Test;
 
