@@ -25,6 +25,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'// 또는 더 높은 버전
 
     runtimeOnly 'com.h2database:h2'	// 테스트용
+    runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
