@@ -26,6 +26,11 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'	// 테스트용
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    testImplementation "org.testcontainers:testcontainers:1.19.1"
+    testImplementation "org.testcontainers:junit-jupiter:1.19.1"
+    testImplementation "org.testcontainers:mysql:1.19.1"
+
 }
 
 tasks.named('test') {
